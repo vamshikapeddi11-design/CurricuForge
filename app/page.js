@@ -1,65 +1,210 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+
+export default function Page() {
+  const router = useRouter();
+
+  const [isLogin, setIsLogin] = useState(true);
+
+  // Login fields
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+
+  // Register fields
+  const [name, setName] = useState("");
+  const [regEmail, setRegEmail] = useState("");
+  const [regPassword, setRegPassword] = useState("");
+
+  useEffect(() => {
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    if (users.length === 0) {
+      setIsLogin(false);
+    } else {
+      setIsLogin(true);
+    }
+  }, []);
+
+  // ✅ LOGIN
+  const handleLogin = (e) => {
+    e.preventDefault();
+
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+
+    const userExists = users.find(
+      (u) => u.email === loginEmail && u.password === loginPassword
+    );
+
+    if (userExists) {
+      localStorage.setItem("currentUser", JSON.stringify(userExists));
+      router.push("/dashboard");
+    } else {
+      alert("User not registered or wrong credentials!");
+    }
+  };
+
+  // ✅ REGISTER (UPDATED)
+  const handleRegister = (e) => {
+    e.preventDefault();
+
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+
+    const alreadyExists = users.find((u) => u.email === regEmail);
+
+    // 🔴 If already registered
+    if (alreadyExists) {
+      alert("Already registered! Please login.");
+      setIsLogin(true);
+      return;
+    }
+
+    const newUser = {
+      name,
+      email: regEmail,
+      password: regPassword,
+    };
+
+    users.push(newUser);
+
+    localStorage.setItem("users", JSON.stringify(users));
+
+    // ✅ AFTER REGISTER → DO NOT LOGIN DIRECTLY
+    alert("Registered successfully! Please login.");
+
+    // Clear fields
+    setName("");
+    setRegEmail("");
+    setRegPassword("");
+
+    // Switch to login page
+    setIsLogin(true);
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.js file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+    <div style={styles.container}>
+      <div style={styles.box}>
+        <h1 style={styles.title}>
+          {isLogin ? "Login" : "Register"}
+        </h1>
+
+        {isLogin ? (
+          <form onSubmit={handleLogin} style={styles.form}>
+            <input
+              type="email"
+              placeholder="Email"
+              value={loginEmail}
+              onChange={(e) => setLoginEmail(e.target.value)}
+              style={styles.input}
+              required
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+            <input
+              type="password"
+              placeholder="Password"
+              value={loginPassword}
+              onChange={(e) => setLoginPassword(e.target.value)}
+              style={styles.input}
+              required
+            />
+
+            <button type="submit" style={styles.button}>
+              Login
+            </button>
+          </form>
+        ) : (
+          <form onSubmit={handleRegister} style={styles.form}>
+            <input
+              type="text"
+              placeholder="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              style={styles.input}
+              required
+            />
+
+            <input
+              type="email"
+              placeholder="Email"
+              value={regEmail}
+              onChange={(e) => setRegEmail(e.target.value)}
+              style={styles.input}
+              required
+            />
+
+            <input
+              type="password"
+              placeholder="Password"
+              value={regPassword}
+              onChange={(e) => setRegPassword(e.target.value)}
+              style={styles.input}
+              required
+            />
+
+            <button type="submit" style={styles.button}>
+              Register
+            </button>
+          </form>
+        )}
+
+        <p style={styles.switchText}>
+          {isLogin ? "New user?" : "Already registered?"}{" "}
+          <span
+            onClick={() => setIsLogin(!isLogin)}
+            style={styles.link}
           >
-            Documentation
-          </a>
-        </div>
-      </main>
+            {isLogin ? "Register" : "Login"}
+          </span>
+        </p>
+      </div>
     </div>
   );
 }
+
+const styles = {
+  container: {
+    height: "100vh",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    background: "#f4f6f8",
+  },
+  box: {
+    width: "350px",
+    padding: "30px",
+    background: "white",
+    borderRadius: "10px",
+    boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+    textAlign: "center",
+  },
+  title: {
+    marginBottom: "20px",
+  },
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "12px",
+  },
+  input: {
+    padding: "10px",
+    borderRadius: "5px",
+    border: "1px solid #ccc",
+  },
+  button: {
+    padding: "10px",
+    background: "#0070f3",
+    color: "white",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+  },
+  switchText: {
+    marginTop: "15px",
+    fontSize: "14px",
+  },
+  link: {
+    color: "blue",
+    cursor: "pointer",
+    fontWeight: "bold",
+  },
+};
