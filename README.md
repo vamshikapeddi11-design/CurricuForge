@@ -31,5 +31,3 @@ npm run dev
 ## 👩‍💻 Author  
 **Vamshika Peddi**  
 https://github.com/vamshikapeddi11-design  
-
-⭐ Star the repo if you like it!
