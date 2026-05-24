@@ -2,9 +2,6 @@
 
 Curriculum Forge is an AI-powered web app that generates structured learning roadmaps based on user-selected role and duration, with weekly topics, notes, and videos.
 
-## 🌐 Live Demo  
-👉 https://vamshikapeddi11-design.github.io/CurricuForge/
-
 ## 📂 Source Code  
 👉 https://github.com/vamshikapeddi11-design/CurricuForge.git
 
