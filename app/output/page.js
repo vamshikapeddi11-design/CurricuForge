@@ -1,15 +1,11 @@
-"use client";
-
-import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import jsPDF from "jspdf";
 
-export default function OutputPage() {
-  const searchParams = useSearchParams();
+export default function OutputPage({ searchParams }) {
+  const role = searchParams.role || "";
+  const duration = searchParams.duration || "";
+  
   const router = useRouter();
-
-  const role = searchParams.get("role") || "";
-  const duration = searchParams.get("duration") || "";
 
   const [roadmap, setRoadmap] = useState(null);
   const [user, setUser] = useState(null);
