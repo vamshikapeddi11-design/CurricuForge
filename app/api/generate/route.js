@@ -1,4 +1,18 @@
-const prompt = `
+export async function POST(req) {
+  try {
+    // ✅ Get data from frontend request
+    const body = await req.json();
+    const { role, duration } = body;
+
+    if (!role || !duration) {
+      return new Response(
+        JSON.stringify({ error: "Missing role or duration" }),
+        { status: 400 }
+      );
+    }
+
+    // ✅ Your prompt (NOW role & duration are defined)
+    const prompt = `
 You are an expert curriculum designer for FAANG-level training.
 
 Create a WEEK-WISE structured learning plan.
@@ -27,3 +41,16 @@ OUTPUT STRICT JSON ONLY:
   }
 ]
 `;
+
+    // 👉 return prompt (or your AI response later)
+    return new Response(JSON.stringify({ prompt }), {
+      status: 200,
+    });
+
+  } catch (error) {
+    return new Response(
+      JSON.stringify({ error: "Server error" }),
+      { status: 500 }
+    );
+  }
+}
