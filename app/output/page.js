@@ -58,40 +58,6 @@ export default function OutputPage() {
     localStorage.setItem(getUserKey(), JSON.stringify(saved));
   };
 
-  // ================= TOPICS =================
-  const getTopics = (role) => {
-    const r = role.toLowerCase().trim();
-
-    if (r === "web developer") return ["HTML", "CSS", "JS", "React", "Node"];
-    if (r === "python developer") return ["Python", "OOP", "Flask", "Django", "APIs"];
-    if (r === "data analyst") return ["Excel", "SQL", "Python", "Pandas", "Power BI"];
-    if (r === "java developer") return ["Java", "OOP", "Spring Boot", "APIs", "Projects"];
-    if (r === "software engineer") return ["DSA", "OOP", "DBMS", "OS", "System Design"];
-    if (r === "frontend developer") return ["HTML", "CSS", "JS", "React", "UI/UX"];
-    if (r === "backend developer") return ["Node", "Express", "APIs", "Auth", "DB"];
-    if (r === "full stack developer") return ["Frontend", "Backend", "React", "Node", "Deploy"];
-    if (r === "ai engineer") return ["Python", "ML", "DL", "NLP", "Deployment"];
-    if (r === "devops engineer") return ["Linux", "Git", "CI/CD", "Docker", "AWS"];
-
-    return ["Invalid Role"];
-  };
-
-  const generateWeeks = (topics, duration) => {
-    const totalWeeks = duration.includes("month")
-      ? parseInt(duration) * 4
-      : 4;
-
-    let weeks = [];
-    let i = 0;
-
-    for (let w = 1; w <= totalWeeks; w++) {
-      weeks.push({ week: w, topic: topics[i % topics.length] });
-      i++;
-    }
-
-    return weeks;
-  };
-
   const desc = (topic) =>
     `Learn ${topic} step by step.
 Build strong fundamentals with practice.
@@ -99,17 +65,18 @@ Apply skills in real projects.`;
 
   // ================= LOAD ROADMAP =================
   useEffect(() => {
-    if (!role || !duration) return;
+  const stored = localStorage.getItem("roadmap");
 
-    const topics = getTopics(role);
+  if (stored) {
+    const data = JSON.parse(stored);
 
     setRoadmap({
       role,
       duration,
-      weeks: generateWeeks(topics, duration),
-      invalid: topics[0] === "Invalid Role",
+      weeks: data, // ✅ API data
     });
-  }, [role, duration]);
+  }
+}, [role, duration]);
 
   if (!roadmap) return <p className="p-10">Generating...</p>;
 
