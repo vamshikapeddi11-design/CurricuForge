@@ -28,7 +28,7 @@ export default function Dashboard() {
       return;
     }
 
-    router.push(`/output?role=${role}&duration=${duration}`);ss
+    router.push(`/output?role=${role}&duration=${duration}`);
   };
 
   const handleLogout = () => {
