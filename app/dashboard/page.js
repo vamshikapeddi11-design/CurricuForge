@@ -22,14 +22,38 @@ export default function Dashboard() {
     }
   }, []);
 
-  const handleGenerate = () => {
-    if (!role || !duration) {
-      alert("Please enter role and duration");
-      return;
+  const handleGenerate = async () => {
+  if (!role || !duration) {
+    alert("Please enter role and duration");
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ role, duration }),
+    });
+
+    if (!res.ok) {
+      throw new Error("API failed");
     }
 
+    const data = await res.json();
+
+    console.log("API DATA:", data);
+
+    // ✅ save roadmap
+    localStorage.setItem("roadmap", JSON.stringify(data));
+
     router.push(`/output?role=${role}&duration=${duration}`);
-  };
+  } catch (err) {
+    console.error(err);
+    alert("API error. Check backend.");
+  }
+};
 
   const handleLogout = () => {
     localStorage.removeItem("currentUser");
