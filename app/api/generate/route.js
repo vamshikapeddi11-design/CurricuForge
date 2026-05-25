@@ -1,55 +1,55 @@
 export async function POST(req) {
   try {
-    // ✅ Get data from frontend request
-    const body = await req.json();
-    const { role, duration } = body;
+    const { role, duration } = await req.json();
 
-    if (!role || !duration) {
-      return new Response(
-        JSON.stringify({ error: "Missing role or duration" }),
-        { status: 400 }
-      );
-    }
-
-    // ✅ Your prompt (NOW role & duration are defined)
     const prompt = `
-You are an expert curriculum designer for FAANG-level training.
+You are an expert curriculum designer.
 
-Create a WEEK-WISE structured learning plan.
+Create a WEEK-WISE roadmap.
 
 ROLE: ${role}
 DURATION: ${duration}
 
-RULES:
-- Must be realistic for job preparation
-- Must include real technologies and tools
-- No generic words like "basics" or "concepts"
-- Every week must have:
-  1. topic
-  2. notes (short learning explanation)
-  3. youtubeSearchQuery (for videos)
-  4. project
+Rules:
+- Return ONLY JSON
+- No explanation
+- Max 8 weeks
 
-OUTPUT STRICT JSON ONLY:
+Format:
 [
   {
     "week": 1,
-    "topic": "...",
-    "notes": "...",
-    "youtubeSearchQuery": "...",
-    "project": "..."
+    "topic": "",
+    "notes": "",
+    "youtubeSearchQuery": "",
+    "project": ""
   }
 ]
 `;
 
-    // 👉 return prompt (or your AI response later)
-    return new Response(JSON.stringify({ prompt }), {
-      status: 200,
-    });
+    // 🔥 TEMP MOCK (no OpenAI yet)
+    const fakeResponse = [
+      {
+        week: 1,
+        topic: `${role} Fundamentals`,
+        notes: `Learn basics of ${role}`,
+        youtubeSearchQuery: `${role} beginner tutorial`,
+        project: `Build basic ${role} project`,
+      },
+      {
+        week: 2,
+        topic: `${role} Intermediate`,
+        notes: `Deep dive into ${role}`,
+        youtubeSearchQuery: `${role} intermediate`,
+        project: `Build advanced feature`,
+      },
+    ];
 
-  } catch (error) {
-    return new Response(
-      JSON.stringify({ error: "Server error" }),
+    return Response.json(fakeResponse);
+
+  } catch (err) {
+    return Response.json(
+      { error: err.message },
       { status: 500 }
     );
   }
