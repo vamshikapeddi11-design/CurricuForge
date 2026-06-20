@@ -1,10 +1,10 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import jsPDF from "jspdf";
 
-export default function OutputPage() {
+function OutputContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -366,5 +366,13 @@ Apply skills in real projects.`;
 
       </div>
     </div>
+  );
+}
+
+export default function OutputPage() {
+  return (
+    <Suspense fallback={<p className="p-10">Loading...</p>}>
+      <OutputContent />
+    </Suspense>
   );
 }
